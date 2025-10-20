@@ -1,13 +1,30 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-h1, h2, h5 {
-  color: #0d6efd;
+section{
+  height: 100vh;
 }
 
+/* Contenu principal doit prendre tout l’espace restant */
+header {
+  flex: 1;
+}
+
+/* Footer toujours collé en bas */
 footer {
-  position: relative;
-  bottom: 0;
-  width: 100%;
+  margin-top: auto;
+  margin-bottom: 0;
+  text-align: center;
+  padding: 1rem 0;
+  background-color: #212529; /* même que bg-dark */
+  color: white;
 }
