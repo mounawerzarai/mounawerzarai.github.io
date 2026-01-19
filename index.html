@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Stages RH</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            font-size: 28px;
+        }
+
+        h1 {
+            color: #1a202c;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-stats {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-stats:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid;
+        }
+
+        .stat-card:nth-child(1) { border-left-color: #667eea; }
+        .stat-card:nth-child(2) { border-left-color: #48bb78; }
+        .stat-card:nth-child(3) { border-left-color: #4299e1; }
+        .stat-card:nth-child(4) { border-left-color: #ed8936; }
+
+        .stat-info h3 {
+            color: #718096;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-info p {
+            color: #1a202c;
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .stat-card:nth-child(1) .stat-icon { background: #eef2ff; }
+        .stat-card:nth-child(2) .stat-icon { background: #f0fdf4; }
+        .stat-card:nth-child(3) .stat-icon { background: #eff6ff; }
+        .stat-card:nth-child(4) .stat-icon { background: #fff7ed; }
+
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f7fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        th {
+            padding: 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #4a5568;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-department {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .badge-encours {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-termine {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-attente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-annule {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .badge-faculty {
+            background: #f0f4ff;
+            color: #4f46e5;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-edit:hover {
+            background: #bfdbfe;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        .btn-fiche {
+            background: #fcd34d;
+            color: #78350f;
+        }
+
+        .btn-fiche:hover {
+            background: #fbbf24;
+        }
+
+        .btn-view-file {
+            background: #c7d2fe;
+            color: #3730a3;
+        }
+
+        .btn-view-file:hover {
+            background: #a5b4fc;
+        }
+
+        .file-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #dbeafe;
+            color: #1e40af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-badge:hover {
+            background: #bfdbfe;
+        }
+
+        .file-modal-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .file-icon-large {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .file-info-display {
+            margin-bottom: 30px;
+        }
+
+        .file-info-display h3 {
+            color: #1a202c;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .file-info-display p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .file-download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .file-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin: auto;
+        }
+
+        .modal-header {
+            padding: 30px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            color: #1a202c;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 30px;
+            flex-wrap: wrap;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            z-index: 10;
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #4a5568;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+        }
+
+        .btn-file {
+            padding: 12px 24px;
+            background: #fbbf24;
+            color: #78350f;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-file:hover {
+            background: #f59e0b;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-details h4 {
+            font-size: 16px;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #065f46;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            color: #1a202c;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .chart-content {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bar-label {
+            min-width: 150px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .bar {
+            flex: 1;
+            height: 35px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .bar.green {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+
+        .bar.blue {
+            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .bar.orange {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .bar.red {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .period-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .period-item {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .period-item h4 {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .period-item p {
+            font-size: 24px;
+            color: #1a202c;
+            font-weight: 700;
+        }
+
+        .fiche-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+        }
+
+        .fiche-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .fiche-header h1 {
+            color: #1a202c;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .fiche-header p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .fiche-section {
+            margin-bottom: 30px;
+        }
+
+        .fiche-section h3 {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #f0f4ff;
+            padding-bottom: 10px;
+        }
+
+        .fiche-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .fiche-item {
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f7fafc;
+        }
+
+        .fiche-item-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .fiche-item-value {
+            font-size: 16px;
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .fiche-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-print {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-print:hover {
+            background: #764ba2;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .fiche-actions {
+                display: none;
+            }
+            .modal {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .header-buttons button {
+                width: 100%;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer button {
+                width: 100%;
+            }
+
+            .fiche-row {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <div class="header-icon">📋</div>
+                <div>
+                    <h1>Gestion des Stages RH</h1>
+                    <p class="subtitle">Plateforme de suivi et gestion des stagiaires</p>
+                </div>
+            </div>
+            <div class="header-buttons">
+                <button class="btn-primary" onclick="openModal()">
+                    <span>➕</span>
+                    <span>Nouveau Stagiaire</span>
+                </button>
+                <button class="btn-stats" onclick="openStatistiques()">
+                    <span>📊</span>
+                    <span>Statistiques</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Stagiaires</h3>
+                    <p id="stat-total">0</p>
+                </div>
+                <div class="stat-icon">👥</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>En Cours</h3>
+                    <p id="stat-encours">0</p>
+                </div>
+                <div class="stat-icon">📅</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Terminés</h3>
+                    <p id="stat-termine">0</p>
+                </div>
+                <div class="stat-icon">✅</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>En Attente</h3>
+                    <p id="stat-attente">0</p>
+                </div>
+                <div class="stat-icon">⏳</div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un stagiaire par nom, prénom, département ou poste...">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stagiaire</th>
+                        <th>Contact</th>
+                        <th>CIN</th>
+                        <th>Département</th>
+                        <th>Période</th>
+                        <th>Tuteur</th>
+                        <th>Faculté</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Statistiques -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content" style="max-width: 1200px;">
+            <div class="modal-header">
+                <h2>📊 Statistiques des Stages</h2>
+            </div>
+            <div class="modal-body">
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Stagiaires par Département</h3>
+                        <div class="chart-content">
+                            <div class="bar-chart" id="departmentChart"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Stagiaires par Statut</h3>
+                        <div class="chart-content">
+                            <div class="bar-chart" id="statusChart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>Analyse par Période de Stage</h3>
+                    <div class="chart-content">
+                        <div class="period-stats" id="periodStats"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeStatistiques()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Fiche d'Affectation -->
+    <div id="ficheModal" class="modal">
+        <div class="modal-content">
+            <div id="ficheContent"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeFiche()">Fermer</button>
+                <button class="btn-print" onclick="printFiche()">
+                    <span>🖨️</span>
+                    <span>Imprimer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Affichage Fichier -->
+    <div id="fileViewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📎 Fiche d'Affectation</h2>
+            </div>
+            <div id="fileViewContent" class="file-modal-content"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeFileView()">Fermer</button>
+                <button class="file-download-btn" onclick="downloadFile()">
+                    <span>⬇️</span>
+                    <span>Télécharger</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nouveau/Modifier Stagiaire -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nouveau Stagiaire</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>CIN *</label>
+                        <input type="text" id="cin" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom *</label>
+                        <input type="text" id="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Prénom *</label>
+                        <input type="text" id="prenom" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact *</label>
+                        <input type="tel" id="telephone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Sexe *</label>
+                        <select id="sexe" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="Masculin">Masculin</option>
+                            <option value="Féminin">Féminin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Niveau d'étude *</label>
+                        <select id="niveauEtude" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="Faculté">Faculté</option>
+                            <option value="ISET">ISET</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom de la Faculté *</label>
+                        <input type="text" id="nomFaculte" required placeholder="Ex: Université de Tunis">
+                    </div>
+                    <div class="form-group">
+                        <label>Département *</label>
+                        <select id="departement" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Informatique">Informatique</option>
+                            <option value="Ressources Humaines">Ressources Humaines</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Production">Production</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Poste *</label>
+                        <select id="poste" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="Assistant Marketing Digital">Assistant Marketing Digital</option>
+                            <option value="Développeur Web">Développeur Web</option>
+                            <option value="Assistant RH">Assistant RH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date de Début *</label>
+                        <input type="date" id="dateDebut" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date de Fin *</label>
+                        <input type="date" id="dateFin" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tuteur *</label>
+                        <input type="text" id="tuteur" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Statut *</label>
+                        <select id="statut" required>
+                            <option value="En attente">En attente</option>
+                            <option value="En cours">En cours</option>
+                            <option value="Terminé">Terminé</option>
+                            <option value="Annulé">Annulé</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Type de stage *</label>
+                        <select id="typeStage" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="Stages étudiants">Stages étudiants</option>
+                            <option value="Stages PFE">Stages PFE</option>
+                            <option value="Stages saisonnier">Stages saisonnier</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="border-top: 2px solid #e2e8f0; padding-top: 20px; margin-top: 20px;">
+                    <label style="font-size: 14px; font-weight: 600; color: #4a5568; margin-bottom: 12px; display: block;">Fiche d'Affectation au Stage</label>
+                    <input type="file" id="fichierAffectation" class="file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    <button class="btn-file" onclick="document.getElementById('fichierAffectation').click()">
+                        <span>📎</span>
+                        <span>Joindre Fiche d'Affectation</span>
+                    </button>
+                    <div id="fileInfo" class="file-info"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+                <button class="btn-primary" onclick="saveStagiaire()">
+                    <span>💾</span>
+                    <span id="btnSaveText">Ajouter</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var currentId = null;
+        var nextId = 2;
+        var stagiaires = [];
+        var uploadedFiles = {};
+
+        function loadStagiaires() {
+            var data = localStorage.getItem('stagiaires');
+            if (data) {
+                stagiaires = JSON.parse(data);
+                if (stagiaires.length > 0) {
+                    nextId = Math.max.apply(Math, stagiaires.map(function(s) { return s.id; })) + 1;
+                }
+            } else {
+                stagiaires = [
+                    {
+                        id: 1,
+                        cin: '15269374',
+                        nom: 'Zarai',
+                        prenom: 'Mounawer',
+                        email: 'mounawer.zarai@email.com',
+                        telephone: '58022916',
+                        sexe: 'Masculin',
+                        niveauEtude: 'ISET',
+                        nomFaculte: 'Institut Supérieur d\'Études Technologiques',
+                        departement: 'Ressources Humaines',
+                        poste: 'Assistant RH',
+                        dateDebut: '2026-01-01',
+                        dateFin: '2026-01-31',
+                        tuteur: 'Majida Saidi',
+                        statut: 'En cours',
+                        typeStage: 'Stages étudiants'
+                    }
+                ];
+                saveStagiairesToStorage();
+            }
+        }
+
+        function saveStagiairesToStorage() {
+            localStorage.setItem('stagiaires', JSON.stringify(stagiaires));
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = stagiaires.length;
+            document.getElementById('stat-encours').textContent = stagiaires.filter(function(s) { return s.statut === 'En cours'; }).length;
+            document.getElementById('stat-termine').textContent = stagiaires.filter(function(s) { return s.statut === 'Terminé'; }).length;
+            document.getElementById('stat-attente').textContent = stagiaires.filter(function(s) { return s.statut === 'En attente'; }).length;
+        }
+
+        function getStatusBadge(statut) {
+            var classes = {
+                'En cours': 'badge-encours',
+                'Terminé': 'badge-termine',
+                'En attente': 'badge-attente',
+                'Annulé': 'badge-annule'
+            };
+            return '<span class="badge ' + (classes[statut] || 'badge-annule') + '">' + statut + '</span>';
+        }
+
+        function formatDate(dateStr) {
+            var date = new Date(dateStr);
+            return date.toLocaleDateString('fr-FR');
+        }
+
+        function formatDateFiche(dateStr) {
+            var date = new Date(dateStr);
+            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        function renderTable(data) {
+            if (!data) data = stagiaires;
+            var tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #718096;">Aucun stagiaire trouvé</td></tr>';
+                return;
+            }
+
+            data.forEach(function(stagiaire) {
+                var initiales = stagiaire.prenom.charAt(0) + stagiaire.nom.charAt(0);
+                var row = '<tr>' +
+                    '<td>' +
+                        '<div class="user-info">' +
+                            '<div class="user-avatar">' + initiales + '</div>' +
+                            '<div class="user-details">' +
+                                '<h4>' + stagiaire.prenom + ' ' + stagiaire.nom + '</h4>' +
+                                '<p>' + stagiaire.poste + '</p>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td>' +
+                        '<div class="contact-info">' +
+                            '<div class="contact-item">' +
+                                '<span>📞</span>' +
+                                '<span>' + stagiaire.telephone + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td>' + stagiaire.cin + '</td>' +
+                    '<td>' +
+                        '<span class="badge badge-department">' +
+                            '🏢 ' + stagiaire.departement +
+                        '</span>' +
+                    '</td>' +
+                    '<td>' +
+                        '<div>' +
+                            '<strong>' + formatDate(stagiaire.dateDebut) + '</strong><br>' +
+                            '<span style="color: #718096;">au ' + formatDate(stagiaire.dateFin) + '</span>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td><strong>' + stagiaire.tuteur + '</strong></td>' +
+                    '<td>' +
+                        '<span class="badge badge-faculty">' +
+                            '🎓 ' + (stagiaire.nomFaculte || 'N/A') +
+                        '</span>' +
+                    '</td>' +
+                    '<td>' + getStatusBadge(stagiaire.statut) + '</td>' +
+                    '<td>' +
+                        '<div class="action-btns">' +
+                            '<button class="btn-action btn-fiche" onclick="viewFiche(' + stagiaire.id + ')">📄 Fiche</button>' +
+                            (stagiaire.fichier ? '<button class="btn-action btn-view-file" onclick="viewUploadedFile(' + stagiaire.id + ')">📎 Fichier</button>' : '') +
+                            '<button class="btn-action btn-edit" onclick="editStagiaire(' + stagiaire.id + ')">✏️ Modifier</button>' +
+                            '<button class="btn-action btn-delete" onclick="deleteStagiaire(' + stagiaire.id + ')">🗑️ Supprimer</button>' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+                tbody.innerHTML += row;
+            });
+        }
+
+        document.getElementById('fichierAffectation').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                var fileInfo = document.getElementById('fileInfo');
+                fileInfo.textContent = '✅ ' + file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)';
+                fileInfo.classList.add('active');
+                
+                // Stocker le fichier dans uploadedFiles
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedFiles[currentId || 'temp'] = {
+                        name: file.name,
+                        data: event.target.result,
+                        type: file.type,
+                        size: file.size
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function openModal() {
+            currentId = null;
+            document.getElementById('modalTitle').textContent = 'Nouveau Stagiaire';
+            document.getElementById('btnSaveText').textContent = 'Ajouter';
+            document.getElementById('cin').value = '';
+            document.getElementById('nom').value = '';
+            document.getElementById('prenom').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('telephone').value = '';
+            document.getElementById('sexe').value = '';
+            document.getElementById('niveauEtude').value = '';
+            document.getElementById('nomFaculte').value = '';
+            document.getElementById('departement').value = '';
+            document.getElementById('poste').value = '';
+            document.getElementById('dateDebut').value = '';
+            document.getElementById('dateFin').value = '';
+            document.getElementById('tuteur').value = '';
+            document.getElementById('statut').value = 'En cours';
+            document.getElementById('typeStage').value = '';
+            document.getElementById('fichierAffectation').value = '';
+            document.getElementById('fileInfo').classList.remove('active');
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function saveStagiaire() {
+            var cin = document.getElementById('cin').value;
+            var nom = document.getElementById('nom').value;
+            var prenom = document.getElementById('prenom').value;
+            var email = document.getElementById('email').value;
+            var telephone = document.getElementById('telephone').value;
+            var sexe = document.getElementById('sexe').value;
+            var niveauEtude = document.getElementById('niveauEtude').value;
+            var nomFaculte = document.getElementById('nomFaculte').value;
+            var departement = document.getElementById('departement').value;
+            var poste = document.getElementById('poste').value;
+            var dateDebut = document.getElementById('dateDebut').value;
+            var dateFin = document.getElementById('dateFin').value;
+            var tuteur = document.getElementById('tuteur').value;
+            var statut = document.getElementById('statut').value;
+            var typeStage = document.getElementById('typeStage').value;
+
+            if (!cin || !nom || !prenom || !email || !telephone || !sexe || !niveauEtude || !nomFaculte || !departement || !poste || !dateDebut || !dateFin || !tuteur || !typeStage) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            var stagiaire = {
+                id: currentId || nextId++,
+                cin: cin,
+                nom: nom,
+                prenom: prenom,
+                email: email,
+                telephone: telephone,
+                sexe: sexe,
+                niveauEtude: niveauEtude,
+                nomFaculte: nomFaculte,
+                departement: departement,
+                poste: poste,
+                dateDebut: dateDebut,
+                dateFin: dateFin,
+                tuteur: tuteur,
+                statut: statut,
+                typeStage: typeStage
+            };
+
+            // Ajouter le fichier s'il existe
+            if (uploadedFiles[currentId || 'temp']) {
+                stagiaire.fichier = uploadedFiles[currentId || 'temp'];
+            }
+
+            if (currentId) {
+                var index = stagiaires.findIndex(function(s) { return s.id === currentId; });
+                stagiaires[index] = stagiaire;
+            } else {
+                stagiaires.push(stagiaire);
+            }
+
+            renderTable();
+            updateStats();
+            saveStagiairesToStorage();
+            closeModal();
+        }
+
+        function editStagiaire(id) {
+            var stagiaire = stagiaires.find(function(s) { return s.id === id; });
+            if (!stagiaire) return;
+
+            currentId = id;
+            document.getElementById('modalTitle').textContent = 'Modifier le Stagiaire';
+            document.getElementById('btnSaveText').textContent = 'Mettre à jour';
+            document.getElementById('cin').value = stagiaire.cin;
+            document.getElementById('nom').value = stagiaire.nom;
+            document.getElementById('prenom').value = stagiaire.prenom;
+            document.getElementById('email').value = stagiaire.email;
+            document.getElementById('telephone').value = stagiaire.telephone;
+            document.getElementById('sexe').value = stagiaire.sexe;
+            document.getElementById('niveauEtude').value = stagiaire.niveauEtude;
+            document.getElementById('nomFaculte').value = stagiaire.nomFaculte || '';
+            document.getElementById('departement').value = stagiaire.departement;
+            document.getElementById('poste').value = stagiaire.poste;
+            document.getElementById('dateDebut').value = stagiaire.dateDebut;
+            document.getElementById('dateFin').value = stagiaire.dateFin;
+            document.getElementById('tuteur').value = stagiaire.tuteur;
+            document.getElementById('statut').value = stagiaire.statut;
+            document.getElementById('typeStage').value = stagiaire.typeStage;
+            document.getElementById('fichierAffectation').value = '';
+            document.getElementById('fileInfo').classList.remove('active');
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function deleteStagiaire(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce stagiaire ?')) {
+                stagiaires = stagiaires.filter(function(s) { return s.id !== id; });
+                renderTable();
+                updateStats();
+                saveStagiairesToStorage();
+            }
+        }
+
+        function viewFiche(id) {
+            var stagiaire = stagiaires.find(function(s) { return s.id === id; });
+            if (!stagiaire) return;
+
+            var ficheHTML = '<div class="fiche-container">' +
+                '<div class="fiche-header">' +
+                    '<h1>📋 FICHE D\'AFFECTATION AU STAGE</h1>' +
+                    '<p>Document officiel d\'affectation du stagiaire</p>' +
+                '</div>' +
+
+                '<div class="fiche-section">' +
+                    '<h3>📌 Informations Personnelles</h3>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Nom</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.nom.toUpperCase() + '</div>' +
+                        '</div>' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Prénom</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.prenom + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">CIN</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.cin + '</div>' +
+                        '</div>' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Sexe</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.sexe + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Email</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.email + '</div>' +
+                        '</div>' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Téléphone</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.telephone + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="fiche-section">' +
+                    '<h3>🎓 Informations Académiques</h3>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Niveau d\'Étude</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.niveauEtude + '</div>' +
+                        '</div>' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Faculté / École</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.nomFaculte + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="fiche-section">' +
+                    '<h3>💼 Informations de Stage</h3>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Département</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.departement + '</div>' +
+                        '</div>' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Poste Assigné</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.poste + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Type de Stage</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.typeStage + '</div>' +
+                        '</div>' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Tuteur/Responsable</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.tuteur + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="fiche-section">' +
+                    '<h3>📅 Période de Stage</h3>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Date de Début</div>' +
+                            '<div class="fiche-item-value">' + formatDateFiche(stagiaire.dateDebut) + '</div>' +
+                        '</div>' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Date de Fin</div>' +
+                            '<div class="fiche-item-value">' + formatDateFiche(stagiaire.dateFin) + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="fiche-row">' +
+                        '<div class="fiche-item">' +
+                            '<div class="fiche-item-label">Statut Actuel</div>' +
+                            '<div class="fiche-item-value">' + stagiaire.statut + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="fiche-section" style="border-top: 3px solid #667eea; padding-top: 30px; margin-top: 30px; text-align: center;">' +
+                    '<p style="color: #718096; font-size: 12px; margin-top: 20px;">Document généré le ' + new Date().toLocaleDateString('fr-FR') + '</p>' +
+                '</div>' +
+            '</div>';
+
+            document.getElementById('ficheContent').innerHTML = ficheHTML;
+            document.getElementById('ficheModal').classList.add('active');
+        }
+
+        function closeFiche() {
+            document.getElementById('ficheModal').classList.remove('active');
+        }
+
+        function printFiche() {
+            window.print();
+        }
+
+        function viewUploadedFile(id) {
+            var stagiaire = stagiaires.find(function(s) { return s.id === id; });
+            if (!stagiaire || !stagiaire.fichier) return;
+
+            var file = stagiaire.fichier;
+            var fileTypeEmoji = getFileIcon(file.type);
+            
+            var content = '<div class="file-icon-large">' + fileTypeEmoji + '</div>' +
+                '<div class="file-info-display">' +
+                    '<h3>' + file.name + '</h3>' +
+                    '<p>Taille: ' + (file.size / 1024).toFixed(2) + ' KB</p>' +
+                '</div>';
+
+            document.getElementById('fileViewContent').innerHTML = content;
+            
+            // Stocker le fichier pour le téléchargement
+            window.currentFileToDownload = {
+                name: file.name,
+                data: file.data
+            };
+
+            document.getElementById('fileViewModal').classList.add('active');
+        }
+
+        function getFileIcon(mimeType) {
+            if (mimeType.includes('pdf')) return '📕';
+            if (mimeType.includes('word')) return '📄';
+            if (mimeType.includes('image')) return '🖼️';
+            return '📎';
+        }
+
+        function closeFileView() {
+            document.getElementById('fileViewModal').classList.remove('active');
+        }
+
+        function downloadFile() {
+            if (window.currentFileToDownload) {
+                var link = document.createElement('a');
+                link.href = window.currentFileToDownload.data;
+                link.download = window.currentFileToDownload.name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            var searchTerm = e.target.value.toLowerCase();
+            var filtered = stagiaires.filter(function(s) {
+                return s.nom.toLowerCase().includes(searchTerm) ||
+                    s.prenom.toLowerCase().includes(searchTerm) ||
+                    s.departement.toLowerCase().includes(searchTerm) ||
+                    s.poste.toLowerCase().includes(searchTerm) ||
+                    s.cin.toLowerCase().includes(searchTerm);
+            });
+            renderTable(filtered);
+        });
+
+        function openStatistiques() {
+            generateStatistics();
+            document.getElementById('statsModal').classList.add('active');
+        }
+
+        function closeStatistiques() {
+            document.getElementById('statsModal').classList.remove('active');
+        }
+
+        function generateStatistics() {
+            var deptStats = {};
+            stagiaires.forEach(function(s) {
+                deptStats[s.departement] = (deptStats[s.departement] || 0) + 1;
+            });
+
+            var deptHtml = '';
+            var maxDept = Math.max.apply(Math, Object.values(deptStats));
+            Object.keys(deptStats).sort().forEach(function(dept) {
+                var count = deptStats[dept];
+                var percentage = (count / maxDept) * 100;
+                deptHtml += '<div class="bar-item"><span class="bar-label">' + dept + '</span><div class="bar" style="width: ' + (percentage * 5) + 'px;">' + count + '</div></div>';
+            });
+            document.getElementById('departmentChart').innerHTML = deptHtml || '<p style="color: #718096;">Aucune donnée disponible</p>';
+
+            var statusStats = {
+                'En cours': 0,
+                'Terminé': 0,
+                'En attente': 0,
+                'Annulé': 0
+            };
+            stagiaires.forEach(function(s) {
+                if (statusStats.hasOwnProperty(s.statut)) {
+                    statusStats[s.statut]++;
+                }
+            });
+
+            var statusHtml = '';
+            var maxStatus = Math.max.apply(Math, Object.values(statusStats));
+            var statusColors = {
+                'En cours': 'green',
+                'Terminé': 'blue',
+                'En attente': 'orange',
+                'Annulé': 'red'
+            };
+            Object.keys(statusStats).forEach(function(status) {
+                var count = statusStats[status];
+                var percentage = maxStatus > 0 ? (count / maxStatus) * 100 : 0;
+                statusHtml += '<div class="bar-item"><span class="bar-label">' + status + '</span><div class="bar ' + statusColors[status] + '" style="width: ' + (percentage * 5) + 'px;">' + count + '</div></div>';
+            });
+            document.getElementById('statusChart').innerHTML = statusHtml;
+
+            var periodStats = {};
+            stagiaires.forEach(function(s) {
+                var debut = new Date(s.dateDebut);
+                var mois = debut.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+                periodStats[mois] = (periodStats[mois] || 0) + 1;
+            });
+
+            var periodHtml = '';
+            Object.keys(periodStats).sort().forEach(function(period) {
+                periodHtml += '<div class="period-item"><h4>' + period + '</h4><p>' + periodStats[period] + ' stagiaire(s)</p></div>';
+            });
+            document.getElementById('periodStats').innerHTML = periodHtml || '<p style="color: #718096;">Aucune donnée disponible</p>';
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('statsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeStatistiques();
+            }
+        });
+
+        document.getElementById('fileViewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFileView();
+            }
+        });
+
+        loadStagiaires();
+        renderTable();
+        updateStats();
+    </script>
+</body>
+</html>
