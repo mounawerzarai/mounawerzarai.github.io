@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Stages RH</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* LOGIN */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+        }
+
+        .login-left {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .login-left h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .login-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .login-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .login-right {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-right h2 {
+            font-size: 24px;
+            color: #1a202c;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .role-btn {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .role-btn:hover {
+            border-color: #667eea;
+        }
+
+        .role-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        /* APP */
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            font-size: 28px;
+        }
+
+        h1 {
+            color: #1a202c;
+            font-size: 28px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f7fafc;
+            padding: 12px 16px;
+            border-radius: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            margin: 2px 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-secondary:hover {
+            background: #f7fafc;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-info h3 {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-info p {
+            color: #1a202c;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f7fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #4a5568;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-ongoing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            background: #dbeafe;
+            color: #1e40af;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: #bfdbfe;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        .btn-approve {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .btn-approve:hover {
+            background: #a7f3d0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 30px;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #1a202c;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .request-item {
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .request-info p {
+            font-size: 13px;
+            color: #718096;
+            margin: 3px 0;
+        }
+
+        .request-info p:first-child {
+            font-weight: 600;
+            color: #1a202c;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .login-box {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+            }
+
+            .header-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .role-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN SECTION -->
+<div id="loginSection">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-left">
+                <div class="login-icon">📋</div>
+                <h1>Gestion des Stages RH</h1>
+                <p>Plateforme complète de gestion et suivi des stagiaires</p>
+            </div>
+            <div class="login-right">
+                <h2>Connexion</h2>
+                <div id="loginAlert"></div>
+                <div class="role-selector">
+                    <button class="role-btn active" onclick="selectRole('rh')">🏢 RH</button>
+                    <button class="role-btn" onclick="selectRole('stagiaire')">👤 Stagiaire</button>
+                </div>
+
+                <!-- RH LOGIN -->
+                <div id="rhLoginForm">
+                    <div class="form-group">
+                        <label>Email RH</label>
+                        <input type="email" id="rhEmail" placeholder="rh@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="rhPassword" placeholder="••••••••">
+                    </div>
+                    <button class="login-btn" onclick="loginRH()">Se Connecter</button>
+                    <p style="text-align: center; font-size: 12px; color: #718096; margin-top: 15px;">Identifiants: rh@company.com / 123456789</p>
+                </div>
+
+                <!-- STAGIAIRE LOGIN -->
+                <div id="stagiaireLoginForm" class="hidden">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="stagiaireEmail" placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>CIN</label>
+                        <input type="text" id="stagiairePin" placeholder="Votre CIN">
+                    </div>
+                    <button class="login-btn" onclick="loginStagiaire()">Se Connecter</button>
+                    <button class="login-btn" style="background: #48bb78;" onclick="showRegisterModal()">Créer un Compte</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RH DASHBOARD -->
+<div id="rhDashboard" class="hidden">
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <div class="header-icon">📋</div>
+                <div>
+                    <h1>Gestion des Stages</h1>
+                    <p style="color: #718096; font-size: 12px;">Plateforme de suivi et gestion des stagiaires</p>
+                </div>
+            </div>
+            <div class="header-buttons">
+                <div class="user-profile">
+                    <div class="user-avatar" id="rhAvatar">RH</div>
+                    <div>
+                        <p style="font-weight: 600;" id="rhName">Assistant RH</p>
+                        <p>Administrateur</p>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="openAddModal()">➕ Nouveau Stagiaire</button>
+                <button class="btn-secondary" onclick="logout()">🚪 Déconnexion</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Stagiaires</h3>
+                    <p id="stat1">0</p>
+                </div>
+                <div class="stat-icon">👥</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Demandes en Attente</h3>
+                    <p id="stat2">0</p>
+                </div>
+                <div class="stat-icon">📬</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Demandes Approuvées</h3>
+                    <p id="stat3">0</p>
+                </div>
+                <div class="stat-icon">✅</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>En Cours</h3>
+                    <p id="stat4">0</p>
+                </div>
+                <div class="stat-icon">📅</div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un stagiaire par nom, email ou CIN...">
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stagiaire</th>
+                        <th>Email</th>
+                        <th>CIN</th>
+                        <th>Département</th>
+                        <th>Période</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="rhTable"></tbody>
+            </table>
+        </div>
+
+        <!-- DEMANDES EN ATTENTE -->
+        <div class="card" style="margin-top: 30px;">
+            <h3>📬 Demandes de Stage en Attente</h3>
+            <div class="table-container">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Stagiaire</th>
+                            <th>Département</th>
+                            <th>Poste</th>
+                            <th>Période</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- STAGIAIRE DASHBOARD -->
+<div id="stagiairedashboard" class="hidden">
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <div class="header-icon">👤</div>
+                <div>
+                    <h1>Mon Espace Stagiaire</h1>
+                    <p style="color: #718096; font-size: 12px;">Demande et suivi de votre stage</p>
+                </div>
+            </div>
+            <div class="header-buttons">
+                <div class="user-profile">
+                    <div class="user-avatar" id="stagAvatar">ST</div>
+                    <div>
+                        <p style="font-weight: 600;" id="stagName">Stagiaire</p>
+                        <p id="stagEmail">email@example.com</p>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="logout()">🚪 Déconnexion</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📝 Soumettre une Demande de Stage</h3>
+            <p style="color: #718096; font-size: 13px; margin-bottom: 15px;">Remplissez le formulaire ci-dessous pour soumettre votre demande de stage</p>
+            <button class="btn-primary" onclick="openRequestModal()">➕ Nouvelle Demande</button>
+        </div>
+
+        <div class="card">
+            <h3>📊 Suivi de Mes Demandes</h3>
+            <div id="stagiaireRequests"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Ajouter Stagiaire (RH) -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>➕ Ajouter un Nouveau Stagiaire</h2>
+        </div>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nom *</label>
+                    <input type="text" id="m_nom" placeholder="Ex: Zarai">
+                </div>
+                <div class="form-group">
+                    <label>Prénom *</label>
+                    <input type="text" id="m_prenom" placeholder="Ex: Mounawer">
+                </div>
+                <div class="form-group">
+                    <label>CIN *</label>
+                    <input type="text" id="m_cin" placeholder="Ex: 15269374">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="m_email" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Département *</label>
+                    <select id="m_dept">
+                        <option>Marketing</option>
+                        <option>Informatique</option>
+                        <option>Ressources Humaines</option>
+                        <option>Finance</option>
+                        <option>Commercial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tuteur *</label>
+                    <input type="text" id="m_tuteur" placeholder="Ex: Majida Saidi">
+                </div>
+                <div class="form-group">
+                    <label>Date Début *</label>
+                    <input type="date" id="m_dateDebut">
+                </div>
+                <div class="form-group">
+                    <label>Date Fin *</label>
+                    <input type="date" id="m_dateFin">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('addModal')">Annuler</button>
+            <button class="btn-primary" onclick="saveFromRH()">💾 Ajouter</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Demande de Stage (Stagiaire) -->
+<div id="requestModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📝 Nouvelle Demande de Stage</h2>
+        </div>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Département Souhaité *</label>
+                    <select id="req_dept">
+                        <option>Marketing</option>
+                        <option>Informatique</option>
+                        <option>Ressources Humaines</option>
+                        <option>Finance</option>
+                        <option>Commercial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Poste *</label>
+                    <input type="text" id="req_poste" placeholder="Ex: Assistant Marketing">
+                </div>
+                <div class="form-group">
+                    <label>Date Début *</label>
+                    <input type="date" id="req_dateDebut">
+                </div>
+                <div class="form-group">
+                    <label>Date Fin *</label>
+                    <input type="date" id="req_dateFin">
+                </div>
+                <div class="form-group" style="grid-column: 1/-1;">
+                    <label>Motivation *</label>
+                    <textarea id="req_motivation" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; min-height: 100px; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('requestModal')">Annuler</button>
+            <button class="btn-primary" onclick="submitRequest()">📤 Soumettre la Demande</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Inscription Stagiaire -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>✅ Créer un Compte Stagiaire</h2>
+        </div>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nom *</label>
+                    <input type="text" id="reg_nom" placeholder="Votre nom">
+                </div>
+                <div class="form-group">
+                    <label>Prénom *</label>
+                    <input type="text" id="reg_prenom" placeholder="Votre prénom">
+                </div>
+                <div class="form-group">
+                    <label>CIN *</label>
+                    <input type="text" id="reg_cin" placeholder="Votre numéro CIN">
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="reg_email" placeholder="votre.email@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Téléphone *</label>
+                    <input type="tel" id="reg_tel" placeholder="06 XX XX XX XX">
+                </div>
+                <div class="form-group">
+                    <label>Faculté/École *</label>
+                    <input type="text" id="reg_faculte" placeholder="Ex: Université de Tunis">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('registerModal')">Annuler</button>
+            <button class="btn-primary" onclick="register()">✅ Créer un Compte</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ====== VARIABLES GLOBALES ======
+    let user = null;
+    let stagiaires = [];
+    let requests = [];
+    let stagiairesDB = [];
+    let editingId = null;
+
+    // Comptes RH fixes
+    const rhAccounts = [
+        { email: 'rh@company.com', password: '123456789', name: 'Assistant RH' }
+    ];
+
+    // ====== INITIALISATION ======
+    async function initApp() {
+        try {
+            console.log('🔄 Démarrage de l\'initialisation...');
+            
+            // Charger stagiairesDB
+            const dbData = localStorage.getItem('stagiairesDB');
+            if (dbData) {
+                stagiairesDB = JSON.parse(dbData);
+                console.log('📚 stagiairesDB chargé:', stagiairesDB.length, 'éléments');
+            } else {
+                stagiairesDB = [
+                    { id: 1, nom: 'Zarai', prenom: 'Mounawer', cin: '15269374', email: 'mounawer@example.com', telephone: '58022916', faculte: 'Institut Supérieur' }
+                ];
+                localStorage.setItem('stagiairesDB', JSON.stringify(stagiairesDB));
+                console.log('💾 stagiairesDB créé par défaut');
+            }
+
+            // Charger stagiaires
+            const stagData = localStorage.getItem('stagiaires');
+            stagiaires = stagData ? JSON.parse(stagData) : [];
+            console.log('👥 stagiaires chargés:', stagiaires.length, 'éléments');
+
+            // Charger demandes
+            const reqData = localStorage.getItem('requests');
+            requests = reqData ? JSON.parse(reqData) : [];
+            console.log('📋 requests chargés:', requests.length, 'éléments');
+
+            console.log('✅ Initialisation réussie');
+        } catch (e) {
+            console.error('⚠️ Erreur initialisation:', e);
+            stagiairesDB = [
+                { id: 1, nom: 'Zarai', prenom: 'Mounawer', cin: '15269374', email: 'mounawer@example.com', telephone: '58022916', faculte: 'Institut Supérieur' }
+            ];
+            stagiaires = [];
+            requests = [];
+        }
+    }
+
+    // ====== SAUVEGARDE ======
+    async function saveAll() {
+        try {
+            console.log('💾 Sauvegarde en cours...');
+            console.log('  - stagiairesDB:', stagiairesDB.length, 'éléments');
+            console.log('  - stagiaires:', stagiaires.length, 'éléments');
+            console.log('  - requests:', requests.length, 'éléments');
+            
+            localStorage.setItem('stagiairesDB', JSON.stringify(stagiairesDB));
+            localStorage.setItem('stagiaires', JSON.stringify(stagiaires));
+            localStorage.setItem('requests', JSON.stringify(requests));
+            
+            console.log('✅ Sauvegarde réussie');
+        } catch (e) {
+            console.error('❌ Erreur sauvegarde:', e);
+            alert('⚠️ Erreur lors de la sauvegarde des données: ' + e.message);
+        }
+    }
+
+    // ====== AUTHENTIFICATION ======
+    function selectRole(role) {
+        document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('rhLoginForm').classList.toggle('hidden', role !== 'rh');
+        document.getElementById('stagiaireLoginForm').classList.toggle('hidden', role !== 'stagiaire');
+    }
+
+    function loginRH() {
+        const email = document.getElementById('rhEmail').value.trim();
+        const password = document.getElementById('rhPassword').value.trim();
+        const alertDiv = document.getElementById('loginAlert');
+
+        if (!email || !password) {
+            alertDiv.innerHTML = '<div class="alert alert-error">❌ Veuillez remplir tous les champs</div>';
+            return;
+        }
+
+        const rhAccount = rhAccounts.find(acc => acc.email === email && acc.password === password);
+        if (rhAccount) {
+            user = { type: 'rh', email, name: rhAccount.name };
+            alertDiv.innerHTML = '<div class="alert alert-success">✅ Connexion réussie!</div>';
+            setTimeout(() => showRH(), 1000);
+        } else {
+            alertDiv.innerHTML = '<div class="alert alert-error">❌ Email ou mot de passe incorrect</div>';
+        }
+    }
+
+    function loginStagiaire() {
+        const email = document.getElementById('stagiaireEmail').value.trim();
+        const cin = document.getElementById('stagiairePin').value.trim();
+        const alertDiv = document.getElementById('loginAlert');
+
+        if (!email || !cin) {
+            alertDiv.innerHTML = '<div class="alert alert-error">❌ Veuillez remplir tous les champs</div>';
+            return;
+        }
+
+        const found = stagiairesDB.find(s => s.email === email && s.cin === cin);
+        if (found) {
+            user = { type: 'stagiaire', ...found };
+            alertDiv.innerHTML = '<div class="alert alert-success">✅ Bienvenue ' + found.prenom + '!</div>';
+            setTimeout(() => showStagiaire(), 1000);
+        } else {
+            alertDiv.innerHTML = '<div class="alert alert-error">❌ Email ou CIN incorrect</div>';
+        }
+    }
+
+    function logout() {
+        if (confirm('Êtes-vous sûr de vouloir vous déconnecter?')) {
+            user = null;
+            editingId = null;
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('rhDashboard').classList.add('hidden');
+            document.getElementById('stagiairedashboard').classList.add('hidden');
+            document.getElementById('rhEmail').value = '';
+            document.getElementById('rhPassword').value = '';
+            document.getElementById('stagiaireEmail').value = '';
+            document.getElementById('stagiairePin').value = '';
+            alert('✅ Déconnecté!');
+        }
+    }
+
+    // ====== NAVIGATION ======
+    function showRH() {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('rhDashboard').classList.remove('hidden');
+        document.getElementById('stagiairedashboard').classList.add('hidden');
+        document.getElementById('rhName').textContent = user.name;
+        renderRH();
+    }
+
+    function showStagiaire() {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('rhDashboard').classList.add('hidden');
+        document.getElementById('stagiairedashboard').classList.remove('hidden');
+        document.getElementById('stagName').textContent = user.prenom + ' ' + user.nom;
+        document.getElementById('stagEmail').textContent = user.email;
+        document.getElementById('stagAvatar').textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+        renderStagiaire();
+    }
+
+    // ====== AFFICHAGE RH ======
+    function renderRH() {
+        // Stats
+        document.getElementById('stat1').textContent = stagiaires.length;
+        document.getElementById('stat2').textContent = requests.filter(r => r.statut === 'En attente').length;
+        document.getElementById('stat3').textContent = requests.filter(r => r.statut === 'Approuvé').length;
+        document.getElementById('stat4').textContent = stagiaires.filter(s => s.statut === 'En cours').length;
+
+        // Table stagiaires
+        let html = '';
+        stagiaires.forEach(s => {
+            const debut = new Date(s.dateDebut).toLocaleDateString('fr-FR');
+            const fin = new Date(s.dateFin).toLocaleDateString('fr-FR');
+            const badgeClass = s.statut === 'En cours' ? 'badge-ongoing' : 'badge-approved';
+            html += `<tr>
+                <td><strong>${s.prenom} ${s.nom}</strong></td>
+                <td>${s.email}</td>
+                <td>${s.cin}</td>
+                <td>${s.departement}</td>
+                <td>${debut} → ${fin}</td>
+                <td><span class="badge ${badgeClass}">${s.statut}</span></td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-action" onclick="editStagiaire(${s.id})" type="button">✏️ Éditer</button>
+                        <button class="btn-action btn-delete" onclick="deleteStagiaire(${s.id})" type="button">🗑️ Supprimer</button>
+                    </div>
+                </td>
+            </tr>`;
+        });
+        document.getElementById('rhTable').innerHTML = html || '<tr><td colspan="7" style="text-align: center; color: #718096; padding: 40px;">Aucun stagiaire</td></tr>';
+
+        // Table demandes
+        let reqHtml = '';
+        requests.filter(r => r.statut === 'En attente').forEach(r => {
+            const stagiaire = stagiairesDB.find(s => s.id === r.userId);
+            if (stagiaire) {
+                const debut = new Date(r.dateDebut).toLocaleDateString('fr-FR');
+                const fin = new Date(r.dateFin).toLocaleDateString('fr-FR');
+                reqHtml += `<tr>
+                    <td><strong>${stagiaire.prenom} ${stagiaire.nom}</strong></td>
+                    <td>${r.departement}</td>
+                    <td>${r.poste}</td>
+                    <td>${debut} → ${fin}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-action btn-approve" onclick="approveRequest(${r.id})" type="button">✅ Approuver</button>
+                            <button class="btn-action btn-delete" onclick="rejectRequest(${r.id})" type="button">❌ Rejeter</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }
+        });
+        document.getElementById('requestsTable').innerHTML = reqHtml || '<tr><td colspan="5" style="text-align: center; color: #718096; padding: 40px;">Aucune demande</td></tr>';
+    }
+
+    // ====== AFFICHAGE STAGIAIRE ======
+    function renderStagiaire() {
+        const userRequests = requests.filter(r => r.userId === user.id);
+        let html = '';
+
+        if (userRequests.length === 0) {
+            html = '<p style="color: #718096; text-align: center; padding: 30px;">Vous n\'avez pas encore soumis de demande</p>';
+        } else {
+            userRequests.forEach(r => {
+                const debut = new Date(r.dateDebut).toLocaleDateString('fr-FR');
+                const fin = new Date(r.dateFin).toLocaleDateString('fr-FR');
+                let badgeClass = 'badge-pending';
+                if (r.statut === 'Approuvé') badgeClass = 'badge-approved';
+                if (r.statut === 'Rejeté') badgeClass = 'badge-rejected';
+
+                html += `<div class="request-item">
+                    <div class="request-info">
+                        <p>${r.departement} - ${r.poste}</p>
+                        <p>📅 ${debut} au ${fin}</p>
+                        <p>💬 ${r.motivation.substring(0, 50)}...</p>
+                    </div>
+                    <span class="badge ${badgeClass}">${r.statut}</span>
+                </div>`;
+            });
+        }
+        document.getElementById('stagiaireRequests').innerHTML = html;
+    }
+
+    // ====== MODALES ======
+    function openAddModal() { 
+        document.getElementById('addModal').classList.add('active');
+        editingId = null; // Réinitialiser le mode édition
+    }
+    function openRequestModal() { document.getElementById('requestModal').classList.add('active'); }
+    function showRegisterModal() { document.getElementById('loginAlert').innerHTML = ''; document.getElementById('registerModal').classList.add('active'); }
+    function closeModal(id) { 
+        document.getElementById(id).classList.remove('active');
+        editingId = null; // Réinitialiser le mode édition à la fermeture
+    }
+
+    // ====== GESTION STAGIAIRES RH ======
+    async function saveFromRH() {
+        const nom = document.getElementById('m_nom').value.trim();
+        const prenom = document.getElementById('m_prenom').value.trim();
+        const cin = document.getElementById('m_cin').value.trim();
+        const email = document.getElementById('m_email').value.trim();
+        const departement = document.getElementById('m_dept').value;
+        const tuteur = document.getElementById('m_tuteur').value.trim();
+        const dateDebut = document.getElementById('m_dateDebut').value;
+        const dateFin = document.getElementById('m_dateFin').value;
+
+        if (!nom || !prenom || !cin || !email || !tuteur || !dateDebut || !dateFin) {
+            alert('⚠️ Veuillez remplir tous les champs');
+            return;
+        }
+
+        if (editingId) {
+            // Mise à jour
+            const idx = stagiaires.findIndex(s => s.id === editingId);
+            if (idx >= 0) {
+                stagiaires[idx] = { 
+                    ...stagiaires[idx], 
+                    nom, prenom, cin, email, departement, tuteur, dateDebut, dateFin 
+                };
+                console.log('✏️ Stagiaire modifié:', stagiaires[idx]);
+                alert('✅ Stagiaire modifié avec succès!');
+                editingId = null;
+            }
+        } else {
+            // Création
+            const newStag = {
+                id: Date.now(),
+                nom, prenom, cin, email, departement, tuteur, dateDebut, dateFin,
+                statut: 'En cours'
+            };
+            console.log('📝 Nouveau stagiaire créé:', newStag);
+            stagiaires.push(newStag);
+            console.log('✏️ stagiaires après ajout:', stagiaires);
+            alert('✅ Stagiaire ajouté avec succès!');
+        }
+
+        await saveAll();
+        closeModal('addModal');
+        clearAddForm();
+        
+        // Réinitialiser le titre et le bouton
+        document.querySelector('#addModal .modal-header h2').textContent = '➕ Ajouter un Nouveau Stagiaire';
+        document.querySelector('#addModal .modal-footer .btn-primary').textContent = '💾 Ajouter';
+        
+        renderRH();
+    }
+
+    function clearAddForm() {
+        document.getElementById('m_nom').value = '';
+        document.getElementById('m_prenom').value = '';
+        document.getElementById('m_cin').value = '';
+        document.getElementById('m_email').value = '';
+        document.getElementById('m_tuteur').value = '';
+        document.getElementById('m_dateDebut').value = '';
+        document.getElementById('m_dateFin').value = '';
+    }
+
+    function editStagiaire(id) {
+        console.log('🔧 Édition stagiaire ID:', id);
+        const stagiaire = stagiaires.find(s => s.id === id);
+        if (stagiaire) {
+            editingId = id;
+            console.log('✏️ Données du stagiaire:', stagiaire);
+            
+            // Remplir le formulaire
+            document.getElementById('m_nom').value = stagiaire.nom;
+            document.getElementById('m_prenom').value = stagiaire.prenom;
+            document.getElementById('m_cin').value = stagiaire.cin;
+            document.getElementById('m_email').value = stagiaire.email;
+            document.getElementById('m_dept').value = stagiaire.departement;
+            document.getElementById('m_tuteur').value = stagiaire.tuteur;
+            document.getElementById('m_dateDebut').value = stagiaire.dateDebut;
+            document.getElementById('m_dateFin').value = stagiaire.dateFin;
+            
+            console.log('📝 Formulaire rempli');
+            
+            // Ouvrir la modal d'ajout
+            document.getElementById('addModal').classList.add('active');
+            console.log('🔓 Modal addModal ouverte');
+        } else {
+            console.error('❌ Stagiaire non trouvé');
+        }
+    }
+
+    async function deleteStagiaire(id) {
+        if (confirm('Êtes-vous sûr?')) {
+            stagiaires = stagiaires.filter(s => s.id !== id);
+            await saveAll();
+            renderRH();
+            alert('✅ Supprimé!');
+        }
+    }
+
+    // ====== DEMANDES ======
+    async function submitRequest() {
+        const departement = document.getElementById('req_dept').value;
+        const poste = document.getElementById('req_poste').value.trim();
+        const dateDebut = document.getElementById('req_dateDebut').value;
+        const dateFin = document.getElementById('req_dateFin').value;
+        const motivation = document.getElementById('req_motivation').value.trim();
+
+        if (!poste || !dateDebut || !dateFin || !motivation) {
+            alert('⚠️ Remplissez tous les champs');
+            return;
+        }
+
+        const newRequest = {
+            id: Date.now(),
+            userId: user.id,
+            departement,
+            poste,
+            dateDebut,
+            dateFin,
+            motivation,
+            statut: 'En attente'
+        };
+
+        console.log('📝 Création nouvelle demande:', newRequest);
+        requests.push(newRequest);
+        console.log('✏️ requests après ajout:', requests);
+
+        await saveAll();
+
+        closeModal('requestModal');
+        document.getElementById('req_poste').value = '';
+        document.getElementById('req_dateDebut').value = '';
+        document.getElementById('req_dateFin').value = '';
+        document.getElementById('req_motivation').value = '';
+        renderStagiaire();
+        renderRH();
+        alert('✅ Demande soumise avec succès!');
+    }
+
+    async function approveRequest(requestId) {
+        const request = requests.find(r => r.id === requestId);
+        if (request) {
+            request.statut = 'Approuvé';
+            
+            // Récupérer le stagiaire
+            const stagiaire = stagiairesDB.find(s => s.id === request.userId);
+            if (stagiaire) {
+                // Ajouter le stagiaire à la liste des stagiaires en cours
+                stagiaires.push({
+                    id: Date.now(),
+                    nom: stagiaire.nom,
+                    prenom: stagiaire.prenom,
+                    cin: stagiaire.cin,
+                    email: stagiaire.email,
+                    departement: request.departement,
+                    tuteur: 'À assigner',
+                    dateDebut: request.dateDebut,
+                    dateFin: request.dateFin,
+                    statut: 'En cours'
+                });
+            }
+            
+            await saveAll();
+            renderRH();
+            alert('✅ Demande approuvée! Stagiaire ajouté à la liste.');
+        }
+    }
+
+    async function rejectRequest(requestId) {
+        const request = requests.find(r => r.id === requestId);
+        if (request) {
+            request.statut = 'Rejeté';
+            await saveAll();
+            renderRH();
+            alert('❌ Demande rejetée!');
+        }
+    }
+
+    // ====== INSCRIPTION ======
+    async function register() {
+        const nom = document.getElementById('reg_nom').value.trim();
+        const prenom = document.getElementById('reg_prenom').value.trim();
+        const cin = document.getElementById('reg_cin').value.trim();
+        const email = document.getElementById('reg_email').value.trim();
+        const telephone = document.getElementById('reg_tel').value.trim();
+        const faculte = document.getElementById('reg_faculte').value.trim();
+
+        if (!nom || !prenom || !cin || !email || !telephone || !faculte) {
+            alert('⚠️ Remplissez tous les champs');
+            return;
+        }
+
+        if (stagiairesDB.find(s => s.email === email || s.cin === cin)) {
+            alert('❌ Email ou CIN déjà utilisé');
+            return;
+        }
+
+        const newStag = {
+            id: Date.now(),
+            nom, 
+            prenom, 
+            cin, 
+            email, 
+            telephone, 
+            faculte
+        };
+
+        console.log('📝 Création nouveau stagiaire:', newStag);
+        stagiairesDB.push(newStag);
+        console.log('✏️ stagiairesDB après ajout:', stagiairesDB);
+
+        await saveAll();
+        
+        // Vérifier que les données sont bien sauvegardées
+        const verification = localStorage.getItem('stagiairesDB');
+        console.log('🔍 Vérification - Données en storage:', verification);
+        
+        closeModal('registerModal');
+        document.getElementById('reg_nom').value = '';
+        document.getElementById('reg_prenom').value = '';
+        document.getElementById('reg_cin').value = '';
+        document.getElementById('reg_email').value = '';
+        document.getElementById('reg_tel').value = '';
+        document.getElementById('reg_faculte').value = '';
+        
+        alert('✅ Compte créé avec succès!\n\nEmail: ' + email + '\nCIN: ' + cin + '\n\nVous pouvez maintenant vous connecter.');
+    }
+
+    // ====== RECHERCHE ======
+    document.addEventListener('DOMContentLoaded', function() {
+        initApp();
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                const filtered = stagiaires.filter(s => 
+                    s.nom.toLowerCase().includes(term) || 
+                    s.prenom.toLowerCase().includes(term) || 
+                    s.email.toLowerCase().includes(term) ||
+                    s.cin.includes(term)
+                );
+                
+                let html = '';
+                filtered.forEach(s => {
+                    const debut = new Date(s.dateDebut).toLocaleDateString('fr-FR');
+                    const fin = new Date(s.dateFin).toLocaleDateString('fr-FR');
+                    const badgeClass = s.statut === 'En cours' ? 'badge-ongoing' : 'badge-approved';
+                    html += `<tr>
+                        <td><strong>${s.prenom} ${s.nom}</strong></td>
+                        <td>${s.email}</td>
+                        <td>${s.cin}</td>
+                        <td>${s.departement}</td>
+                        <td>${debut} → ${fin}</td>
+                        <td><span class="badge ${badgeClass}">${s.statut}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-action" onclick="editStagiaire(${s.id})" type="button">✏️ Éditer</button>
+                                <button class="btn-action btn-delete" onclick="deleteStagiaire(${s.id})" type="button">🗑️ Supprimer</button>
+                            </div>
+                        </td>
+                    </tr>`;
+                });
+                document.getElementById('rhTable').innerHTML = html || '<tr><td colspan="7" style="text-align: center; color: #718096;">Aucun résultat</td></tr>';
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
